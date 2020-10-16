@@ -1,0 +1,264 @@
+
+<!DOCTYPE HTML>
+<html>
+<head>
+<meta charset="utf-8">
+<title>ゆか_じゃんけん</title>
+    <style>
+        table.row th,
+        table.row td{
+            display:block;}
+        
+    </style>
+</head>
+<body>
+<table border="0" align="center" >
+  <tr>
+   <th width="130" height="130"><div  id="title"></div><img src="img/title.png" width="340" height="110" ></th>
+   <th width="130" height="130"><a href="rule.html" target="_blank" rel="noopener"> ルール説明</a></th>
+  </tr>
+</table>
+
+<table align="center" >
+  <tr>
+  <td>
+    <table  >
+    <tr>
+      <th width="250" height="250"><div id="ahand"></div></th>
+      <th>VS</th>
+      <th width="250" height="250"><div id="bhand"></div></th>
+      <th width="300" height="200"><div id="result"></div></th>
+      <tr>
+      <th>相手</th>
+      <td>&nbsp;</td>
+      <th>自分</th>
+      <td width="200" height="10"><div id="niboshicountlabel"></div></td>
+      </tr>
+    </tr>
+    </table>
+  </td>
+</tr>
+
+
+<tr>
+  <th ><form name="janken">
+  <table border="1" >
+    <tr>
+      <td colspan="3"><img src="img/selsect.png" height="70" width="200"></td>
+    </tr>
+    <tr>
+      <th><input type="button" onClick="getbhand(0)" value="グー" id="gu" style="width:100px;height:50px;background-color:skyblue"></th>
+      <th><input type="button" onClick="getbhand(1)" value="チョキ" id="cho" style="width:100px;height:50px;background-color: aquamarine;"></th>
+      <th><input type="button" onClick="getbhand(2)" value="パー" id="pa" style="width:100px;height:50px;background-color:hotpink;"></th>
+    </tr>
+    <tr>
+      <th><input name="button2" type="button" onClick="handreset()" value="手持ちのニボシを増やす" id="retry"style="width:200px;height:50px"></th>
+      <th><input name="button3" type="button" onClick="feed()" value="猫にニボシをあげる" id="retry"style="width:200px;height:50px"></th>
+      <th><input name="button4" type="submit" onClick="retire('実行しますか？')" value="猫の下僕をやめる" id="retire"style="width:200px;height:50px"></th>
+    </tr>
+    <table border="1">
+    <tr>
+      <th><img src="img/にぼしポイント.png" width="250" height="100"></th>
+      <th align="left"><div id="seityoucountlabel"></div></th>
+    
+      <th><div  width="250" height="150" id="nekoseityou"></th>
+    </tr>
+    </table>
+  </table>
+  </form></th>
+  </tr>
+</table>
+
+<script language="JavaScript">
+hand = new Array("gu.png","ch.png","pa.png");
+
+timer = 0;
+count = 0;
+
+const chobutton = document.getElementById("cho");
+const gubutton = document.getElementById("gu");
+const pabutton = document.getElementById("pa");
+const retrybutton = document.getElementById("retry");
+
+niboshicount  = 0;
+nekoseityoucount =0;
+
+var nibohilabel=0;
+
+document.getElementById("niboshicountlabel").textContent="手持ちのにぼし　"+nibohilabel +"にぼし";
+document.getElementById("seityoucountlabel").textContent=nekoseityoucount +"にぼし";
+document.getElementById("nekoseityou").innerHTML="<img src='"+"img/" +"koneko.png" + "' >"; 
+
+            
+
+getahand();
+
+function getbhand(btn) {
+	//タイマーを止める
+	clearTimeout(timer); 
+	//手を出す
+	r = Math.floor(Math.random() * 3);
+	document.getElementById("ahand").innerHTML = "<img src='" +"img/"+ hand[r] + "'>";
+	document.getElementById("bhand").innerHTML = "<img src='" +"img/"+ hand[btn] + "'>"; 
+
+  document.getElementById("result").innerHTML = "";
+  
+
+    
+    chobutton.disabled = true;
+    gubutton.disabled = true;
+    pabutton.disabled = true;
+
+    
+    //勝ったか負けたか判定する
+    
+       //あいこになったとき
+        if( hand[r]==hand[btn]){
+            document.getElementById("result").innerHTML = "<img src='"+"img/"+"じゃんけんねこdraw.png" + "'>";
+            retrybutton.disabled=false;
+        }
+
+        //自分がパーを出したとき    
+        if(hand[r]==hand[0]&&hand[btn]==hand[2]){
+            document.getElementById("result").innerHTML = "<img src='" +"img/"+"じゃんけんねこwin.png" + "'>";
+            retrybutton.disabled=false;
+            niboshicount ++;
+            if(niboshicount<0){
+              niboshicount=0;
+            }
+            nibohilabel=niboshicount;
+            document.getElementById("niboshicountlabel").textContent="手持ちのにぼし　"+nibohilabel +"にぼし";
+        }
+        if(hand[r]==hand[1]&&hand[btn]==hand[2]){
+            document.getElementById("result").innerHTML ="<img src='" +"img/"+"じゃんけんねこlose.png"+"'>";
+            retrybutton.disabled=false;
+            niboshicount = niboshicount-1;
+            if(niboshicount<0){
+              niboshicount=0;
+            }
+            nibohilabel=niboshicount;
+            document.getElementById("niboshicountlabel").textContent="手持ちのにぼし　"+nibohilabel +"にぼし";
+            
+        }
+
+        //自分がチョキを出したとき    
+        if(hand[r]==hand[0]&&hand[btn]==hand[1]){
+            document.getElementById("result").innerHTML = "<img src='" +"img/"+"じゃんけんねこlose.png" + "'>";
+            retrybutton.disabled=false;
+            niboshicount = niboshicount-1;
+            if(niboshicount<0){
+              niboshicount=0;
+            }
+            nibohilabel=niboshicount;
+            document.getElementById("niboshicountlabel").textContent="手持ちのにぼし　"+nibohilabel +"にぼし";
+            
+        }
+
+        if(hand[r]==hand[2]&&hand[btn]==hand[1]){
+            document.getElementById("result").innerHTML = "<img src='" +"img/"+"じゃんけんねこwin.png" + "'>";
+            retrybutton.disabled=false;
+            niboshicount ++;
+            if(niboshicount<0){
+              niboshicount=0;
+            }
+            nibohilabel=niboshicount;
+            document.getElementById("niboshicountlabel").textContent="手持ちのにぼし　"+nibohilabel +"にぼし";
+        }
+
+        //自分がグーを出したとき    
+        if(hand[r]==hand[1]&&hand[btn]==hand[0]){
+            document.getElementById("result").innerHTML = "<img src='" +"img/"+"じゃんけんねこwin.png" + "'>";
+            retrybutton.disabled=false;
+            niboshicount ++;
+            if(niboshicount<0){
+              niboshicount=0;
+            }
+            nibohilabel=niboshicount;
+            document.getElementById("niboshicountlabel").textContent="手持ちのにぼし　"+nibohilabel +"にぼし";
+        }
+
+        if(hand[r]==hand[2]&&hand[btn]==hand[0]){
+            document.getElementById("result").innerHTML = "<img src='" +"img/"+"じゃんけんねこlose.png" + "'>";
+            retrybutton.disabled=false;
+            niboshicount = niboshicount-1;
+            if(niboshicount<0){
+              niboshicount=0;
+            }
+            nibohilabel=niboshicount;
+            document.getElementById("niboshicountlabel").textContent="手持ちのにぼし　"+nibohilabel +"にぼし";
+            
+        }
+}
+
+function handreset() {
+
+	//初期状態に戻す 
+	getahand();
+
+  
+}
+
+function getahand() {
+	//手を順番に表示
+	document.getElementById("ahand").innerHTML = "<img src='"+"img/" + hand[count] + "'>"; 
+	document.getElementById("bhand").innerHTML = "<img src='"+"img/" + hand[count] + "'>"; 
+  document.getElementById("result").innerHTML = ""; 
+	
+    count++;
+	if (count > 2) count = 0;
+	timer = setTimeout("getahand()",500);
+
+    chobutton.disabled = false;
+    gubutton.disabled = false;
+    pabutton.disabled = false;
+
+    retrybutton.disabled=true;
+}
+
+function feed(){
+
+  //ボーナスニボシ!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+  //手持ちのにぼしをまとめて5匹以上、猫ちゃんにあげたら2匹おまけ
+  //手持ちのにぼしをまとめて10匹以上、猫ちゃんにあげたら5匹おまけ
+  //手持ちのにぼしをまとめて20匹以上、猫ちゃんにあげたら15匹おまけ
+  //ボーナスニボシ!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+  if(niboshicount>=5&&niboshicount<10){
+      niboshicount = niboshicount+2; 
+  }else if(niboshicount>=10&&niboshicount<20){
+      niboshicount = niboshicount+5; 
+  }else if(niboshicount>=20){
+      niboshicount = niboshicount+15; 
+  }
+  
+  nekoseityoucount = nekoseityoucount + niboshicount;
+  niboshicount=0;
+  nibohilabel=niboshicount;
+
+  document.getElementById("niboshicountlabel").textContent="手持ちのにぼし　"+nibohilabel +"にぼし";
+  document.getElementById("seityoucountlabel").textContent=nekoseityoucount +"にぼし";
+
+  //猫の成長パラメータ(子猫⇒中猫⇒大猫)
+  if(nekoseityoucount>=5&&nekoseityoucount<10){
+        //中猫
+        document.getElementById("nekoseityou").innerHTML="<img src='"+"img/" +"nakaneko.png" + "'>"; 
+  }else if(nekoseityoucount>=10){
+        //大猫
+        document.getElementById("nekoseityou").innerHTML="<img src='"+"img/" +"ooneko.png" + "'>"; 
+  }
+}
+
+//下僕をやめるボタン
+function retire(){
+  var result = confirm('ほんとにやめちゃう？？');
+  
+  if( result==true ) {
+  
+      console.log('さよならにゃー');
+      getahand();
+  
+  }
+  
+}
+</script>
+</body>
+</html>
